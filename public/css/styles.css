@@ -128,8 +128,8 @@ button:hover {
   display: flex;
   -webkit-box-pack: justify;
       -ms-flex-pack: justify;
-          justify-content: space-between; /* Distribute the event names evenly */
-  width: 100%; /* Full width */
+          justify-content: space-between;
+  width: 100%;
   position: absolute;
   top: -40px;
   left: 0;
@@ -138,7 +138,7 @@ button:hover {
   font-weight: 800;
   scale: 1.1;
   -ms-flex-wrap: nowrap;
-      flex-wrap: nowrap; /* Prevent wrapping, let it overflow */
+      flex-wrap: nowrap;
   gap: 5px;
   overflow: visible;
   z-index: -10;
@@ -147,7 +147,7 @@ button:hover {
 [class^=event-name] {
   font-size: 250px;
   font-weight: 800;
-  white-space: nowrap; /* Prevent the words from breaking or wrapping */
+  white-space: nowrap;
   display: block;
   overflow: visible;
   position: relative;

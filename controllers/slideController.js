@@ -131,6 +131,50 @@
 
 
 
+// // controllers/slideController.js
+
+// const path = require('path');
+// const { removeBackground } = require('../services/backgroundRemoval');
+// const fs = require('fs');
+
+// // Function to handle image uploads and remove background
+// async function handleImageUpload(req, res) {
+//   try {
+//     // Check if a file was uploaded
+//     if (!req.file) {
+//       return res.status(400).send('No file uploaded.');
+//     }
+
+//     // Get the path to the uploaded image
+//     const imagePath = req.file.path;
+
+//     console.log(`Uploaded Image Path: ${imagePath}`); // Log the uploaded image path
+
+//     // Call the background removal function
+//     const outputFileName = await removeBackground(imagePath);
+
+//     // Optionally delete the original uploaded image to save space
+//     // fs.unlink(imagePath, (err) => {
+//     //   if (err) {
+//     //     console.error(`Error deleting original image: ${err}`);
+//     //   } else {
+//     //     console.log(`Deleted original image: ${imagePath}`);
+//     //   }
+//     // });
+
+//     // Redirect to /add-info with the output image path
+//     res.redirect(`/add-info?imagePath=${encodeURIComponent(outputFileName)}`);
+//   } catch (error) {
+//     console.error('Error during background removal process:', error);
+//     res.status(500).send('Failed to remove background from the image.');
+//   }
+// }
+
+// module.exports = {
+//   handleImageUpload,
+// };
+
+
 // controllers/slideController.js
 
 const path = require('path');
@@ -142,7 +186,7 @@ async function handleImageUpload(req, res) {
   try {
     // Check if a file was uploaded
     if (!req.file) {
-      return res.status(400).send('No file uploaded.');
+      return res.status(400).json({ error: 'No file uploaded.' });
     }
 
     // Get the path to the uploaded image
@@ -162,11 +206,11 @@ async function handleImageUpload(req, res) {
     //   }
     // });
 
-    // Redirect to /add-info with the output image path
-    res.redirect(`/add-info?imagePath=${encodeURIComponent(outputFileName)}`);
+    // Send JSON response with the output image path
+    res.json({ imagePath: outputFileName });
   } catch (error) {
     console.error('Error during background removal process:', error);
-    res.status(500).send('Failed to remove background from the image.');
+    res.status(500).json({ error: 'Failed to remove background from the image.' });
   }
 }
 
