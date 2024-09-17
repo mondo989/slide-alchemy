@@ -2,3 +2,4 @@ lib-cov
 node_modules/
 public/uploads/
 .DS_Store
+venv/
