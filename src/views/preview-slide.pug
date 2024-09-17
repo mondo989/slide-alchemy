@@ -1,0 +1,79 @@
+//- // src/views/preview-slide.pug
+
+//- doctype html
+//- html(lang="en")
+//-   head
+//-     meta(charset="UTF-8")
+//-     meta(name="viewport" content="width=device-width, initial-scale=1.0")
+//-     title Slide Alchemy - Slide Preview
+//-     link(rel="stylesheet" href="/css/styles.css")
+//-   body.preview-slide
+//-     h1 Slide Preview
+//-     a(href="/") Go to Home
+
+//-     // Add the '#' back when applying background and text colors
+//-     .slide-preview(style=`background-color: #${backgroundColor}; color: #${textColor};`)
+//-       if imagePath
+//-         img(src=`/uploads/${imagePath}` alt="Uploaded Image" class="slide-image" style="max-width: 100%;")
+
+//-       .presenter-container
+//-         h2 #{name}
+//-         h3 #{title}
+
+//-       .event-name-container
+//-         each val, index in [...Array(4)]
+//-           .line
+//-             span.event-name(class=`event-name-${index + 1}`)
+//-               - var repeatedEventName = Array(5).fill(eventName).join(' ')
+//-               | #{repeatedEventName}
+
+
+
+//-     .slide-properties
+//-       if exportAsMp4 !== 'undefined'
+//-         span Export as MP4 is selected.
+//-       if animate !== 'undefined'
+//-         span Animate is selected.
+//-       if loop !== 'undefined'
+//-         span Loop is selected.
+//-       if includeLogo !== 'undefined'
+//-         span Include Logo is selected.
+
+// src/views/preview-slide.pug
+
+doctype html
+html(lang="en")
+  head
+    meta(charset="UTF-8")
+    meta(name="viewport" content="width=device-width, initial-scale=1.0")
+    title Slide Alchemy - Slide Preview
+    link(rel="stylesheet" href="/css/styles.css")
+  body.preview-slide
+    h1 Slide Preview
+    a(href="/") Go to Home
+
+    .slide-preview(style=`background-color: #${backgroundColor}; color: #${textColor};`)
+      if imagePath
+        img(src=`/uploads/${imagePath}` alt="Processed Image" class="slide-image" style="max-width: 100%;")
+
+      .presenter-container
+        h2 #{name}
+        h3 #{title}
+
+      .event-name-container
+        each val, index in [...Array(4)]
+          .line
+            span.event-name(class=`event-name-${index + 1}`)
+              - var repeatedEventName = Array(3).fill(eventName).join(' ')
+              | #{repeatedEventName}
+
+    .slide-properties
+      if exportAsMp4
+        span Export as MP4 is selected.
+      if animate
+        span Animate is selected.
+      if loop
+        span Loop is selected.
+      if includeLogo
+        span Include Logo is selected.
+

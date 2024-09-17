@@ -1,0 +1,23 @@
+doctype html
+html(lang="en")
+  head
+    meta(charset="UTF-8")
+    meta(name="viewport" content="width=device-width, initial-scale=1.0")
+    title Slide Alchemy - Upload Image
+    link(rel="stylesheet" href="/css/styles.css")
+  body
+    h1 Upload Image
+
+    #drop-zone
+      p Drag image in (Recommended size)
+
+    form(action="/upload" method="POST" enctype="multipart/form-data")
+      input(type="file" name="image" id="file-input")
+      p Or upload by URL
+      input(type="text" name="url" id="url-input" placeholder="Image URL")
+      button#upload-button(type="button") Upload by URL
+      button(type="submit") Upload Image
+
+    p#error-message
+
+    script(src="/js/main.js")

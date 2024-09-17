@@ -1,0 +1,17 @@
+doctype html
+html(lang="en")
+  head
+    meta(charset="UTF-8")
+    meta(name="viewport" content="width=device-width, initial-scale=1.0")
+    title Slide Alchemy - Done!
+    link(rel="stylesheet" href="/css/styles.css")
+  body
+    h1 Done!
+
+    // Display the generated slide or image preview
+    img(src=`${imagePath}` alt="Generated Slide")
+
+    div
+      button(type="button") Create Another
+      button(type="button") Download as MP4
+      button(type="button") Share

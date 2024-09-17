@@ -1,0 +1,55 @@
+// src/views/add-info.pug
+
+doctype html
+html(lang="en")
+  head
+    meta(charset="UTF-8")
+    meta(name="viewport" content="width=device-width, initial-scale=1.0")
+    title Add Information
+    link(rel="stylesheet" href="/css/styles.css")
+    script.
+      // Normalize hex codes but remove the '#'
+      function normalizeHexCode() {
+        const bgColorInput = document.querySelector('input[name="backgroundColor"]');
+        const textColorInput = document.querySelector('input[name="textColor"]');
+
+        // Use default values if fields are empty
+        if (!bgColorInput.value.trim()) {
+          bgColorInput.value = '000000'; // Default to black, no #
+        } else {
+          bgColorInput.value = bgColorInput.value.replace(/^#+/, '').slice(0, 6); // Remove # and ensure 6 characters
+        }
+
+        if (!textColorInput.value.trim()) {
+          textColorInput.value = 'ffffff'; // Default to white, no #
+        } else {
+          textColorInput.value = textColorInput.value.replace(/^#+/, '').slice(0, 6); // Remove # and ensure 6 characters
+        }
+      }
+  body
+    h1 Add Information
+    a(href="/") Go to Home
+
+    form(action="/add-info" method="POST" onsubmit="normalizeHexCode()")
+
+      p 8B9498
+
+      label(for="name") Speaker Name:
+      input(type="text" name="name" placeholder="Speaker Name" value="Elon Musk" required)
+
+      label(for="title") Speaker Title:
+      input(type="text" name="title" placeholder="Speaker Title" value="CEO SpaceX, X, Boring Company, Pornhub" required)
+
+      label(for="eventName") Event Name:
+      input(type="text" name="eventName" placeholder="Event Name" value="All-In Summit" required)
+
+      label(for="backgroundColor") Background Color (Hex Code):
+      input(type="text" name="backgroundColor" value="232323" required pattern="^([0-9A-Fa-f]{6})$" title="Please enter a valid 6-digit hex color code. (e.g., 232323)")
+
+      label(for="textColor") Text Color (Hex Code):
+      input(type="text" name="textColor" value="ffffff" required pattern="^([0-9A-Fa-f]{6})$" title="Please enter a valid 6-digit hex color code. (e.g., ffffff)")
+
+      if imagePath
+        input(type="hidden" name="imagePath" value=imagePath)
+
+      button(type="submit") Continue to Slide Properties
