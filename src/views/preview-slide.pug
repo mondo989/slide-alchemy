@@ -49,31 +49,32 @@ html(lang="en")
     title Slide Alchemy - Slide Preview
     link(rel="stylesheet" href="/css/styles.css")
   body.preview-slide
-    h1 Slide Preview
-    a(href="/") Go to Home
+    .main-container
+      h1 Slide Preview
+      a(href="/") Go to Home
 
-    .slide-preview(style=`background-color: #${backgroundColor}; color: #${textColor};`)
-      if imagePath
-        img(src=`/uploads/${imagePath}` alt="Processed Image" class="slide-image" style="max-width: 100%;")
+      .slide-preview(style=`background-color: #${backgroundColor}; color: #${textColor};`)
+        if imagePath
+          img(src=`/uploads/${imagePath}` alt="Processed Image" class="slide-image" style="max-width: 100%;")
 
-      .presenter-container
-        h2 #{name}
-        h3 #{title}
+        .presenter-container
+          h2 #{name}
+          h3 #{title}
 
-      .event-name-container
-        each val, index in [...Array(4)]
-          .line
-            span.event-name(class=`event-name-${index + 1}`)
-              - var repeatedEventName = Array(3).fill(eventName).join(' ')
-              | #{repeatedEventName}
+        .event-name-container
+          each val, index in [...Array(4)]
+            .line
+              span.event-name(class=`event-name-${index + 1}`)
+                - var repeatedEventName = Array(3).fill(eventName).join(' ')
+                | #{repeatedEventName}
 
-    .slide-properties
-      if exportAsMp4
-        span Export as MP4 is selected.
-      if animate
-        span Animate is selected.
-      if loop
-        span Loop is selected.
-      if includeLogo
-        span Include Logo is selected.
+      .slide-properties
+        if exportAsMp4
+          span Export as MP4 is selected.
+        if animate
+          span Animate is selected.
+        if loop
+          span Loop is selected.
+        if includeLogo
+          span Include Logo is selected.
 

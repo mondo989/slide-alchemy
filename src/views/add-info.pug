@@ -7,6 +7,9 @@ html(lang="en")
     meta(name="viewport" content="width=device-width, initial-scale=1.0")
     title Add Information
     link(rel="stylesheet" href="/css/styles.css")
+    link(rel="preconnect" href="https://fonts.googleapis.com")
+    link(rel="preconnect" href="https://fonts.gstatic.com" crossorigin)
+    link(href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;400;600;800&display=swap" rel="stylesheet")
     script.
       // Normalize hex codes but remove the '#'
       function normalizeHexCode() {
@@ -27,29 +30,28 @@ html(lang="en")
         }
       }
   body
-    h1 Add Information
-    a(href="/") Go to Home
+    .main-container
+      h1 Add Your Event Details
+      a(href="/") Go to Home
 
-    form(action="/add-info" method="POST" onsubmit="normalizeHexCode()")
+      form(action="/add-info" method="POST" onsubmit="normalizeHexCode()")
 
-      p 8B9498
+        label(for="name") Speaker Name:
+        input(type="text" name="name" placeholder="Speaker Name" value="Elon Musk" required)
 
-      label(for="name") Speaker Name:
-      input(type="text" name="name" placeholder="Speaker Name" value="Elon Musk" required)
+        label(for="title") Speaker Title:
+        input(type="text" name="title" placeholder="Speaker Title" value="CEO SpaceX, X, Boring Company, Pornhub" required)
 
-      label(for="title") Speaker Title:
-      input(type="text" name="title" placeholder="Speaker Title" value="CEO SpaceX, X, Boring Company, Pornhub" required)
+        label(for="eventName") Event Name:
+        input(type="text" name="eventName" placeholder="Event Name" value="All-In Summit" required)
 
-      label(for="eventName") Event Name:
-      input(type="text" name="eventName" placeholder="Event Name" value="All-In Summit" required)
+        label(for="backgroundColor") Background Color (Hex Code):
+        input(type="text" name="backgroundColor" value="232323" required pattern="^([0-9A-Fa-f]{6})$" title="Please enter a valid 6-digit hex color code. (e.g., 232323)")
 
-      label(for="backgroundColor") Background Color (Hex Code):
-      input(type="text" name="backgroundColor" value="232323" required pattern="^([0-9A-Fa-f]{6})$" title="Please enter a valid 6-digit hex color code. (e.g., 232323)")
+        label(for="textColor") Text Color (Hex Code):
+        input(type="text" name="textColor" value="ffffff" required pattern="^([0-9A-Fa-f]{6})$" title="Please enter a valid 6-digit hex color code. (e.g., ffffff)")
 
-      label(for="textColor") Text Color (Hex Code):
-      input(type="text" name="textColor" value="ffffff" required pattern="^([0-9A-Fa-f]{6})$" title="Please enter a valid 6-digit hex color code. (e.g., ffffff)")
+        if imagePath
+          input(type="hidden" name="imagePath" value=imagePath)
 
-      if imagePath
-        input(type="hidden" name="imagePath" value=imagePath)
-
-      button(type="submit") Continue to Slide Properties
+        button(type="submit" class="main-cta") Continue to Slide Properties

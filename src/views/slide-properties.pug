@@ -8,51 +8,52 @@ html(lang="en")
     title Slide Properties
     link(rel="stylesheet" href="/css/styles.css")
   body
-    h1 Slide Properties
-    a(href="/") Go to Home
+    .main-container
+      h1 Additional Properties
+      a(href="/") Go to Home
 
-    form(action="/slide-properties" method="POST")
-      // Hidden input for imagePath
-      input(type="hidden" name="imagePath" value=imagePath)
+      form(action="/slide-properties" method="POST")
+        // Hidden input for imagePath
+        input(type="hidden" name="imagePath" value=imagePath)
 
-      // Hidden inputs for text content
-      input(type="hidden" name="name" value=name)
-      input(type="hidden" name="title" value=title)
-      input(type="hidden" name="eventName" value=eventName)
-      input(type="hidden" name="backgroundColor" value=backgroundColor)
-      input(type="hidden" name="textColor" value=textColor)
+        // Hidden inputs for text content
+        input(type="hidden" name="name" value=name)
+        input(type="hidden" name="title" value=title)
+        input(type="hidden" name="eventName" value=eventName)
+        input(type="hidden" name="backgroundColor" value=backgroundColor)
+        input(type="hidden" name="textColor" value=textColor)
 
-      // Displaying non-editable data
-      label(for="name")
-      p #{name}
+        // Displaying non-editable data
+        //- label(for="name")
+        //- p #{name}
 
-      label(for="title")
-      p #{title}
+        //- label(for="title")
+        //- p #{title}
 
-      label(for="eventName")
-      p #{eventName}
+        //- label(for="eventName")
+        //- p #{eventName}
 
-      label(for="backgroundColor") Background Color (Hex Code):
-      p #{backgroundColor}
+        //- label(for="backgroundColor") Background Color (Hex Code):
+        //- p #{backgroundColor}
 
-      label(for="textColor") Text Color (Hex Code):
-      p #{textColor}
+        //- label(for="textColor") Text Color (Hex Code):
+        //- p #{textColor}
 
-      // Editable checkboxes
-      label
-        input(type="checkbox" name="exportAsMp4")
-        | Export as MP4
+        // Editable checkboxes
+        label
+          input(type="checkbox" name="exportAsMp4")
+          | Export as MP4
 
-      label
-        input(type="checkbox" name="animate")
-        | Animate
+        label
+          input(type="checkbox" name="animate")
+          | Animate
 
-      label
-        input(type="checkbox" name="loop")
-        | Loop
+        label
+          input(type="checkbox" name="loop")
+          | Loop
 
-      label
-        input(type="checkbox" name="includeLogo")
-        | Include Logo
+        label
+          input(type="checkbox" name="includeLogo")
+          | Include Logo
 
-      button(type="submit") Create!
+        button(type="submit" class="main-cta") Create!

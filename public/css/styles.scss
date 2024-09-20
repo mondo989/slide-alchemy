@@ -1,6 +1,12 @@
 // Variables
+$button-cta-primary: #1DD6FF;
+$primary-font-family: 'Poppins',
+sans-serif;
+$secondary-font-family: 'Open Sans',
+sans-serif;
 $primary-color: #5a67d8;
 $primary-hover: #434190;
+$primay-gradient: linear-gradient(226.28deg, #40DCFF 6%, #9C25CF 82.7%);
 $background-color: #f4f4f4;
 $border-radius: 5px;
 $input-padding: 10px;
@@ -8,22 +14,47 @@ $font-color: #333;
 
 // Global Styles
 body {
-  font-family: 'Open Sans', sans-serif;
   background-color: $background-color;
+  background: $primay-gradient;
   color: $font-color;
+  font-family: $primary-font-family;
   margin: 0;
   padding: 0;
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100vh;
+  height: 120vh;
   flex-direction: column;
+
+  &::before {
+    background: #00000085;
+    content: "";
+    position: absolute;
+    height: inherit;
+    top: 0;
+    right: 0;
+    left: 0;
+    bottom: 0;
+    z-index: -1;
+  }
+}
+
+.main-container {
+  background-color: white;
+  padding: 40px 20px;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  justify-content: center;
+  width: 850px;
+  margin: 30px;
 }
 
 // Headings
 h1 {
   font-size: 2.5rem;
   margin-bottom: 20px;
+  text-align: center;
 }
 
 // Forms
@@ -41,32 +72,53 @@ form {
     border-radius: $border-radius;
     border: 1px solid #ccc;
   }
+
+  input[type=text] {
+    padding: 15px 0;
+    background: #f8f8f8;
+    font-family: $secondary-font-family;
+    text-indent: 10px;
+    font-size: 16px;
+  }
+
+  label {
+    margin-bottom: 5px;
+    opacity: 0.9;
+    font-weight: 600;
+  }
 }
 
-// Buttons
-button {
-  background-color: $primary-color;
-  color: white;
-  padding: 10px;
-  border: none;
-  border-radius: $border-radius;
+.main-cta {
+  display: inline-block;
+  background: $button-cta-primary;
+  font-family: $primary-font-family;
+  color: #232323;
+  font-weight: 600;
   cursor: pointer;
-  font-size: 1rem;
-
-  &:hover {
-    background-color: $primary-hover;
-  }
+  font-size: 18px;
+  padding: 15px 20px;
+  border: 5px dashed;
+  border-image: linear-gradient(to right, #9f00ff, #00ffff);
+  border-image-slice: 1;
+  border-radius: 8px;
 }
 
 // Drop Zone
 #drop-zone {
-  width: 900px;
+  width: 600px;
   height: 500px;
-  border: 2px dashed #ccc;
-  border-radius: $border-radius;
+  margin: 30px 40px;
+  background: linear-gradient(135deg, rgba(255, 0, 255, 0.2), rgba(0, 255, 255, 0.2));
+
+  border-radius: 15px;
+  /* Border with gradient */
+  border: 5px dashed $primay-gradient;
+  border-radius: 15px;
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
+  position: relative;
   margin-bottom: 20px;
 
   &.highlight {
@@ -76,6 +128,14 @@ button {
 
   p {
     color: #888;
+  }
+
+  .drop-zone__icons {
+    display: flex;
+
+    img {
+      margin: 0 25px;
+    }
   }
 }
 
@@ -133,7 +193,6 @@ button {
   scale: 1.1;
   flex-wrap: nowrap;
   gap: 5px;
-  overflow: visible;
   z-index: -10;
 }
 
@@ -144,7 +203,7 @@ button {
   display: block;
   overflow: visible;
   position: relative;
-  letter-spacing: -15.3px; 
+  letter-spacing: -15.3px;
   opacity: 0.45;
   text-transform: uppercase;
 }
@@ -190,7 +249,9 @@ button {
   from {
     opacity: 0;
     translate: 0 120px;
-  } to {
+  }
+
+  to {
     opacity: 1;
     translate: 0 -50px;
   }
@@ -200,9 +261,13 @@ button {
   0% {
     translate: 0;
     opacity: 0;
-  } 90% {
+  }
+
+  90% {
     opacity: 0;
-  } 100% {
+  }
+
+  100% {
     opacity: inherit;
   }
 }
@@ -211,7 +276,8 @@ button {
   0% {
     opacity: 0;
   }
-   100% {
+
+  100% {
     translate: -30%;
     opacity: inherit;
   }
@@ -221,7 +287,9 @@ button {
   from {
     translate: 20%;
     opacity: 0;
-  } 100% {
+  }
+
+  100% {
     opacity: inherit;
     translate: -120%;
   }
@@ -230,7 +298,9 @@ button {
 @keyframes eventNameAnimationThree {
   from {
     opacity: 0;
-  } 100% {
+  }
+
+  100% {
     opacity: inherit;
     translate: -170%;
   }
@@ -240,7 +310,9 @@ button {
   from {
     translate: 80px;
     opacity: 0;
-  } 100% {
+  }
+
+  100% {
     translate: -300%;
     opacity: inherit;
   }
