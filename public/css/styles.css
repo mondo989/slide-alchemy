@@ -31,6 +31,11 @@ body::before {
   bottom: 0;
   z-index: -1;
 }
+body iframe {
+  height: 1024px;
+  width: 1920px;
+  scale: 0.75;
+}
 
 .main-container {
   background-color: white;
@@ -148,6 +153,27 @@ form label {
   margin: 0 25px;
 }
 
+.generate-slide {
+  width: 100%;
+  height: 100vh;
+  scale: 1;
+}
+.generate-slide .slide-preview {
+  width: 100%;
+  height: 100vh;
+}
+.generate-slide [class^=event-name] {
+  font-size: 320px;
+  font-weight: 800;
+  white-space: nowrap;
+  display: block;
+  overflow: visible;
+  position: relative;
+  letter-spacing: -15.3px;
+  opacity: 0.45;
+  text-transform: uppercase;
+}
+
 #error-message {
   color: red;
   font-size: 0.9rem;
@@ -156,6 +182,9 @@ form label {
 
 .preview-slide {
   margin-bottom: 100px;
+}
+.preview-slide .main-container {
+  background-color: transparent;
 }
 
 .presenter-container {
@@ -169,7 +198,6 @@ form label {
 .slide-preview {
   width: 1024px;
   height: 768px;
-  border: 2px solid blue;
   position: relative;
   overflow: hidden;
   z-index: 0;

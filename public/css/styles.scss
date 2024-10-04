@@ -37,6 +37,12 @@ body {
     bottom: 0;
     z-index: -1;
   }
+
+  iframe {
+    height: 1024px;
+    width: 1920px;
+    scale: 0.75;
+  }
 }
 
 .main-container {
@@ -139,6 +145,30 @@ form {
   }
 }
 
+.generate-slide {
+  width: 100%;
+  height: 100vh;
+  scale: 1;
+
+  .slide-preview {
+    width: 100%;
+    height: 100vh;
+  }
+
+  [class^="event-name"] {
+    font-size: 320px;
+    font-weight: 800;
+    white-space: nowrap;
+    display: block;
+    overflow: visible;
+    position: relative;
+    letter-spacing: -15.3px;
+    opacity: 0.45;
+    text-transform: uppercase;
+  }
+  
+}
+
 // Error Messages
 #error-message {
   color: red;
@@ -148,6 +178,10 @@ form {
 
 .preview-slide {
   margin-bottom: 100px;
+
+  .main-container {
+    background-color: transparent;
+  }
 }
 
 .presenter-container {
@@ -161,7 +195,6 @@ form {
 .slide-preview {
   width: 1024px;
   height: 768px;
-  border: 2px solid blue;
   position: relative;
   overflow: hidden;
   z-index: 0;

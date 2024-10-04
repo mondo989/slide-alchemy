@@ -1,10 +1,10 @@
-// routes/index.js
+// // routes/index.js
 
 const express = require('express');
 const multer = require('multer');
-const { handleImageUpload } = require('../controllers/slideController');
 const path = require('path');
 const router = express.Router();
+const slideController = require('../controllers/slideController'); // <-- Add this line to import slideController
 
 // Set up Multer for file uploads (ensure the public/uploads folder exists)
 const storage = multer.diskStorage({
@@ -22,7 +22,7 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage }); // Use the custom storage configuration
 
 // Route to handle image upload
-router.post('/upload', upload.single('image'), handleImageUpload);
+router.post('/upload', upload.single('image'), slideController.handleImageUpload); // <-- Also added slideController here
 
 // Route to serve the homepage (index)
 router.get('/', (req, res) => {
@@ -77,8 +77,9 @@ router.post('/slide-properties', (req, res) => {
     imagePath,
   } = req.body;
 
+  // Redirect to /generate-slide instead of /preview-slide
   res.redirect(
-    `/preview-slide?name=${encodeURIComponent(name)}&title=${encodeURIComponent(
+    `/generate-slide?name=${encodeURIComponent(name)}&title=${encodeURIComponent(
       title
     )}&eventName=${encodeURIComponent(eventName)}&backgroundColor=${encodeURIComponent(
       backgroundColor
@@ -88,8 +89,8 @@ router.post('/slide-properties', (req, res) => {
   );
 });
 
-// Route to serve the /preview-slide page
-router.get('/preview-slide', (req, res) => {
+// Route to serve the /generate-slide page (without buttons)
+router.get('/generate-slide', (req, res) => {
   const {
     name,
     title,
@@ -103,7 +104,8 @@ router.get('/preview-slide', (req, res) => {
     imagePath,
   } = req.query;
 
-  res.render('preview-slide', {
+  // Render the same content as preview-slide but without the interactive buttons
+  res.render('generate-slide', {
     name,
     title,
     eventName,
@@ -115,6 +117,30 @@ router.get('/preview-slide', (req, res) => {
     includeLogo,
     imagePath,
   });
+});
+
+// Route to handle the video generation request
+router.post('/generate-video', slideController.generateVideo); // <-- This now works since slideController is defined
+
+// Route to serve the /preview-slide page
+router.get('/preview-slide', (req, res) => {
+  try {
+    res.render('preview-slide', {
+      name: req.query.name,
+      title: req.query.title,
+      eventName: req.query.eventName,
+      imagePath: req.query.imagePath,
+      backgroundColor: req.query.backgroundColor,
+      textColor: req.query.textColor,
+      exportAsMp4: req.query.exportAsMp4,
+      animate: req.query.animate,
+      loop: req.query.loop,
+      includeLogo: req.query.includeLogo
+    });
+  } catch (error) {
+    console.error('Error rendering preview-slide:', error);
+    res.status(500).send('Internal Server Error');
+  }
 });
 
 module.exports = router;
