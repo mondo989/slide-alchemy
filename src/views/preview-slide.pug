@@ -1,80 +1,90 @@
-//- // src/views/preview-slide.pug
-
-//- doctype html
-//- html(lang="en")
-//-   head
-//-     meta(charset="UTF-8")
-//-     meta(name="viewport" content="width=device-width, initial-scale=1.0")
-//-     title Slide Alchemy - Slide Preview
-//-     link(rel="stylesheet" href="/css/styles.css")
-//-   body.preview-slide
-//-     h1 Slide Preview
-//-     a(href="/") Go to Home
-
-//-     // Add the '#' back when applying background and text colors
-//-     .slide-preview(style=`background-color: #${backgroundColor}; color: #${textColor};`)
-//-       if imagePath
-//-         img(src=`/uploads/${imagePath}` alt="Uploaded Image" class="slide-image" style="max-width: 100%;")
-
-//-       .presenter-container
-//-         h2 #{name}
-//-         h3 #{title}
-
-//-       .event-name-container
-//-         each val, index in [...Array(4)]
-//-           .line
-//-             span.event-name(class=`event-name-${index + 1}`)
-//-               - var repeatedEventName = Array(5).fill(eventName).join(' ')
-//-               | #{repeatedEventName}
-
-
-
-//-     .slide-properties
-//-       if exportAsMp4 !== 'undefined'
-//-         span Export as MP4 is selected.
-//-       if animate !== 'undefined'
-//-         span Animate is selected.
-//-       if loop !== 'undefined'
-//-         span Loop is selected.
-//-       if includeLogo !== 'undefined'
-//-         span Include Logo is selected.
-
-// src/views/preview-slide.pug
+// preview-slide.pug
 
 doctype html
-html(lang="en")
+html
   head
-    meta(charset="UTF-8")
-    meta(name="viewport" content="width=device-width, initial-scale=1.0")
-    title Slide Alchemy - Slide Preview
-    link(rel="stylesheet" href="/css/styles.css")
+    title Slide Alchemy Preview
+    link(rel='stylesheet', href='/css/styles.css')
+    script(src='/js/main.js')
   body.preview-slide
     .main-container
       h1 Slide Preview
-      a(href="/") Go to Home
+      //- a(href="/") Go to Home
 
-      .slide-preview(style=`background-color: #${backgroundColor}; color: #${textColor};`)
-        if imagePath
-          img(src=`/uploads/${imagePath}` alt="Processed Image" class="slide-image" style="max-width: 100%;")
+      //- Embed the generate-slide view inside an iframe
+      iframe(
+        src=`/generate-slide?name=${name}&title=${title}&eventName=${eventName}&backgroundColor=${backgroundColor}&textColor=${textColor}&exportAsMp4=${exportAsMp4}&animate=${animate}&loop=${loop}&includeLogo=${includeLogo}&imagePath=${imagePath}`, 
+        width="100%", 
+        height="100%", 
+        frameborder="0", 
+        scrolling="no"
+      )
+      //- .slide-preview(style=`background-color: #${backgroundColor}; color: #${textColor};`)
+      //-   if imagePath
+      //-     img(src=`/uploads/${imagePath}` alt="Processed Image" class="slide-image" style="max-width: 100%;")
 
-        .presenter-container
-          h2 #{name}
-          h3 #{title}
+      //-   .presenter-container
+      //-     h2 #{name}
+      //-     h3 #{title}
 
-        .event-name-container
-          each val, index in [...Array(4)]
-            .line
-              span.event-name(class=`event-name-${index + 1}`)
-                - var repeatedEventName = Array(3).fill(eventName).join(' ')
-                | #{repeatedEventName}
+      //-   .event-name-container
+      //-     each val, index in [...Array(4)]
+      //-       .line
+      //-         span.event-name(class=`event-name-${index + 1}`)
+      //-           - var repeatedEventName = Array(3).fill(eventName).join(' ')
+      //-           | #{repeatedEventName}
 
-      .slide-properties
-        if exportAsMp4
-          span Export as MP4 is selected.
-        if animate
-          span Animate is selected.
-        if loop
-          span Loop is selected.
-        if includeLogo
-          span Include Logo is selected.
+    // Button to start video generation
+    button#generate-slide Generate Slide
 
+    // Spinner to show during processing (hidden by default)
+    div#spinner(style="display:none;")
+      img(src="/imgs/spinner-full.svg" alt="Processing...")
+
+    // Download button (hidden by default, will appear when the video is ready)
+    a#download-video(href="", download, style="display:none;") Download Video
+
+    script.
+      document.addEventListener('DOMContentLoaded', () => {
+        const generateSlideButton = document.getElementById('generate-slide');
+        
+        if (generateSlideButton) {
+          generateSlideButton.addEventListener('click', async () => {
+            // Show spinner
+            document.getElementById('spinner').style.display = 'block';
+
+            // Hide the download button in case it's visible from a previous operation
+            document.getElementById('download-video').style.display = 'none';
+
+            try {
+              // Capture the full current URL (including query parameters)
+              const currentUrl = window.location.href;
+
+              // Send the current URL to the server
+              const response = await fetch('/generate-video', {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ url: currentUrl }),
+              });
+
+              if (!response.ok) throw new Error('Failed to generate video');
+              
+              const data = await response.json();
+
+              // Hide spinner when processing is done
+              document.getElementById('spinner').style.display = 'none';
+
+              // Show the download button with the link to the generated video
+              const downloadButton = document.getElementById('download-video');
+              downloadButton.href = `/uploads/${data.filename}`;
+              downloadButton.style.display = 'block';
+            } catch (error) {
+              console.error('Error generating video:', error);
+              document.getElementById('spinner').style.display = 'none';
+              alert('Failed to generate video');
+            }
+          });
+        }
+      });

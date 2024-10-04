@@ -1,219 +1,163 @@
-// const path = require('path');
-// const { spawn } = require('child_process');
-
-// // Controller to handle image upload and display info form
-// exports.uploadImage = (req, res) => {
-//   if (!req.file) {
-//     return res.status(400).send('No image uploaded.');
-//   }
-//   const imagePath = req.file.path;
-//   res.render('add-info', { imagePath });
-// };
-
-// // Controller to generate slide
-// exports.generateSlide = (req, res) => {
-//   const { speakerName, speakerTitle, backgroundHex, textHex } = req.body;
-//   const imagePath = req.body.imagePath; // Path of the uploaded image
-
-//   // Call the Python script to remove the background from the image
-//   const pythonProcess = spawn('python3', ['scripts/remove_bg.py', imagePath]);
-
-//   pythonProcess.stdout.on('data', (data) => {
-//     console.log(`Python script output: ${data}`);
-//   });
-
-//   pythonProcess.on('close', (code) => {
-//     if (code === 0) {
-//       // Render the final "Done" page with the generated slide
-//       res.render('done', { speakerName, speakerTitle, backgroundHex, textHex });
-//     } else {
-//       res.status(500).send('Error processing image.');
-//     }
-//   });
-// };
-
-
-// // controllers/slideController.js
-
-// const path = require('path');
-// const { removeBackground } = require('../services/backgroundRemoval');
-
-// // Function to handle image uploads and remove background
-// async function handleImageUpload(req, res) {
-//   try {
-//     // Get the image path after upload
-//     const imagePath = path.join(__dirname, '../public/uploads', req.file.filename);
-    
-//     console.log(`Uploaded Image Path: ${imagePath}`);  // Log the uploaded image path
-
-//     // Call the background removal function
-//     const outputImagePath = await removeBackground(imagePath);
-
-//     // Send the processed image path in the response
-//     res.status(200).json({ message: 'Background removed', originalImage: imagePath, outputImage: outputImagePath });
-//   } catch (error) {
-//     console.error('Error during background removal process:', error);
-//     res.status(500).json({ error: 'Failed to remove background' });
-//   }
-// }
-
-// module.exports = {
-//   handleImageUpload,
-// };
-
-
-// // controllers/slideController.js
-
-// const path = require('path');
-// const { removeBackground } = require('../services/backgroundRemoval');
-// const fs = require('fs');
-
-// // Function to handle image uploads and remove background
-// async function handleImageUpload(req, res) {
-//   try {
-//     // Check if a file was uploaded
-//     if (!req.file) {
-//       return res.status(400).send('No file uploaded.');
-//     }
-
-//     // Get the path to the uploaded image
-//     const imagePath = req.file.path;
-
-//     console.log(`Uploaded Image Path: ${imagePath}`); // Log the uploaded image path
-
-//     // Call the background removal function
-//     const outputFileName = await removeBackground(imagePath);
-
-//     // Optionally delete the original uploaded image to save space
-//     // fs.unlink(imagePath, (err) => {
-//     //   if (err) {
-//     //     console.error(`Error deleting original image: ${err}`);
-//     //   } else {
-//     //     console.log(`Deleted original image: ${imagePath}`);
-//     //   }
-//     // });
-
-//     // Extract form data (if any)
-//     const {
-//       name = '',
-//       title = '',
-//       eventName = '',
-//       backgroundColor = 'FFFFFF', // Default to white if not provided
-//       textColor = '000000',       // Default to black if not provided
-//       exportAsMp4,
-//       animate,
-//       loop,
-//       includeLogo,
-//     } = req.body;
-
-//     // Send the processed image to the preview-slide view
-//     res.render('preview-slide', {
-//       imagePath: outputFileName, // Pass the output image filename to the view
-//       name,
-//       title,
-//       eventName,
-//       backgroundColor,
-//       textColor,
-//       exportAsMp4,
-//       animate,
-//       loop,
-//       includeLogo,
-//     });
-//   } catch (error) {
-//     console.error('Error during background removal process:', error);
-//     res.status(500).send('Failed to remove background from the image.');
-//   }
-// }
-
-// module.exports = {
-//   handleImageUpload,
-// };
-
-
-
-// // controllers/slideController.js
-
-// const path = require('path');
-// const { removeBackground } = require('../services/backgroundRemoval');
-// const fs = require('fs');
-
-// // Function to handle image uploads and remove background
-// async function handleImageUpload(req, res) {
-//   try {
-//     // Check if a file was uploaded
-//     if (!req.file) {
-//       return res.status(400).send('No file uploaded.');
-//     }
-
-//     // Get the path to the uploaded image
-//     const imagePath = req.file.path;
-
-//     console.log(`Uploaded Image Path: ${imagePath}`); // Log the uploaded image path
-
-//     // Call the background removal function
-//     const outputFileName = await removeBackground(imagePath);
-
-//     // Optionally delete the original uploaded image to save space
-//     // fs.unlink(imagePath, (err) => {
-//     //   if (err) {
-//     //     console.error(`Error deleting original image: ${err}`);
-//     //   } else {
-//     //     console.log(`Deleted original image: ${imagePath}`);
-//     //   }
-//     // });
-
-//     // Redirect to /add-info with the output image path
-//     res.redirect(`/add-info?imagePath=${encodeURIComponent(outputFileName)}`);
-//   } catch (error) {
-//     console.error('Error during background removal process:', error);
-//     res.status(500).send('Failed to remove background from the image.');
-//   }
-// }
-
-// module.exports = {
-//   handleImageUpload,
-// };
-
-
 // controllers/slideController.js
 
 const path = require('path');
-const { removeBackground } = require('../services/backgroundRemoval');
 const fs = require('fs');
+const puppeteer = require('puppeteer');
+const { exec } = require('child_process');
+const url = require('url'); // To parse the URL and query parameters
 
 // Function to handle image uploads and remove background
 async function handleImageUpload(req, res) {
   try {
-    // Check if a file was uploaded
     if (!req.file) {
-      return res.status(400).json({ error: 'No file uploaded.' });
+      return res.status(400).json({
+        error: 'No file uploaded.',
+      });
     }
 
-    // Get the path to the uploaded image
     const imagePath = req.file.path;
+    console.log(`Uploaded Image Path: ${imagePath}`);
 
-    console.log(`Uploaded Image Path: ${imagePath}`); // Log the uploaded image path
-
-    // Call the background removal function
-    const outputFileName = await removeBackground(imagePath);
-
-    // Optionally delete the original uploaded image to save space
-    // fs.unlink(imagePath, (err) => {
-    //   if (err) {
-    //     console.error(`Error deleting original image: ${err}`);
-    //   } else {
-    //     console.log(`Deleted original image: ${imagePath}`);
-    //   }
-    // });
-
-    // Send JSON response with the output image path
-    res.json({ imagePath: outputFileName });
+    const outputFileName = await removeBackground(imagePath); // Ensure removeBackground is working
+    res.json({
+      imagePath: outputFileName,
+    });
   } catch (error) {
     console.error('Error during background removal process:', error);
-    res.status(500).json({ error: 'Failed to remove background from the image.' });
+    res.status(500).json({
+      error: 'Failed to remove background from the image.',
+    });
   }
 }
 
+
+// Import the removeBackground function
+const { removeBackground } = require('../services/backgroundRemoval'); // Adjust the path based on your file structure
+
+// Function to handle image uploads and remove background
+async function handleImageUpload(req, res) {
+  try {
+    if (!req.file) {
+      return res.status(400).json({
+        error: 'No file uploaded.',
+      });
+    }
+
+    const imagePath = req.file.path;
+    console.log(`Uploaded Image Path: ${imagePath}`);
+
+    // Ensure removeBackground function is working
+    const outputFileName = await removeBackground(imagePath);
+    res.json({
+      imagePath: outputFileName,
+    });
+  } catch (error) {
+    console.error('Error during background removal process:', error);
+    res.status(500).json({
+      error: 'Failed to remove background from the image.',
+    });
+  }
+}
+
+// Function to generate video from the generated slide
+async function generateVideo(req, res) {
+  // Get the full URL from the request body (should be the preview-slide URL)
+  const { url: previewUrl } = req.body;
+
+  if (!previewUrl) {
+    return res.status(400).send('No URL provided.');
+  }
+
+  // Parse the URL and extract the query parameters
+  const parsedUrl = url.parse(previewUrl, true);
+  const {
+    name,
+    title,
+    eventName,
+    backgroundColor,
+    textColor,
+    exportAsMp4,
+    animate,
+    loop,
+    includeLogo,
+    imagePath,
+  } = parsedUrl.query;
+
+  // Ensure all required fields are present
+  if (!name || !title || !eventName || !backgroundColor || !textColor || !imagePath) {
+    return res.status(400).send('Some required parameters are missing.');
+  }
+
+  // Generate the corresponding /generate-slide URL by replacing 'preview-slide' with 'generate-slide'
+  const generateSlideUrl = `http://localhost:3000/generate-slide?name=${encodeURIComponent(
+    name
+  )}&title=${encodeURIComponent(title)}&eventName=${encodeURIComponent(
+    eventName
+  )}&backgroundColor=${encodeURIComponent(
+    backgroundColor
+  )}&textColor=${encodeURIComponent(textColor)}&exportAsMp4=${exportAsMp4}&animate=${animate}&loop=${loop}&includeLogo=${includeLogo}&imagePath=${encodeURIComponent(
+    imagePath
+  )}`;
+
+  console.log(`Navigating to URL: ${generateSlideUrl}`);
+
+  try {
+    // Launch a new Puppeteer browser instance
+    const browser = await puppeteer.launch({ headless: true });
+    const page = await browser.newPage();
+
+    // Navigate Puppeteer to the /generate-slide page (not the preview-slide)
+    await page.goto(generateSlideUrl, { waitUntil: 'networkidle0' });
+
+    // Set the viewport to the required resolution
+    await page.setViewport({ width: 1280, height: 720 }); // Adjusted to PowerPoint aspect ratio
+
+    // Directory to store the frames
+    const framesDir = path.join(__dirname, '../public/uploads/frames');
+    if (!fs.existsSync(framesDir)) {
+      fs.mkdirSync(framesDir, { recursive: true });
+    }
+
+    // Capture frames
+    for (let i = 0; i < 10; i++) {
+      const framePath = path.join(framesDir, `frame-${String(i).padStart(3, '0')}.png`);
+      console.log(`Capturing frame ${i + 1}...`);
+      await page.screenshot({ path: framePath });
+    }
+
+    // Close Puppeteer
+    await browser.close();
+
+    const videoOutputPath = path.join(__dirname, '../public/uploads/video.mp4');
+
+    // Use FFmpeg to combine the frames into a video
+    const command = `ffmpeg -y -framerate 30 -i ${framesDir}/frame-%03d.png -c:v libx264 -pix_fmt yuv420p ${videoOutputPath}`;
+    console.log('Starting FFmpeg with command:', command);
+
+    exec(command, (error, stdout, stderr) => {
+      if (error) {
+        console.error(`FFmpeg error: ${error.message}`);
+        console.error(`FFmpeg stderr: ${stderr}`);
+        return res.status(500).send('Error generating video');
+      }
+
+      console.log('FFmpeg stdout:', stdout);
+      console.log('FFmpeg completed successfully!');
+
+      // Clean up the frames directory after creating the video
+      fs.rmdirSync(framesDir, { recursive: true });
+
+      // Send back the filename for download
+      res.json({ filename: 'video.mp4', videoUrl: `/uploads/video.mp4` });
+    });
+  } catch (error) {
+    console.error('Error generating video:', error);
+    res.status(500).send('Internal Server Error');
+  }
+}
+
+// Export the functions
 module.exports = {
   handleImageUpload,
+  generateVideo,
 };

@@ -1,0 +1,28 @@
+// views/generate-slide.pug
+
+doctype html
+html
+  head
+    title Slide Alchemy Generate Slide
+    link(rel='stylesheet', href='/css/styles.css')
+  body.generate-slide.preview-slide
+    // Display the content (same as preview-slide)
+    .slide-preview(style=`background-color: #${backgroundColor}; color: #${textColor};`)
+        if imagePath
+          img(src=`/uploads/${imagePath}` alt="Processed Image" class="slide-image" style="max-width: 100%;")
+
+        .presenter-container
+          h2 #{name}
+          h3 #{title}
+
+        .event-name-container
+          each val, index in [...Array(4)]
+            .line
+              span.event-name(class=`event-name-${index + 1}`)
+                - var repeatedEventName = Array(3).fill(eventName).join(' ')
+                | #{repeatedEventName}
+
+    //- if imagePath
+    //-   img(src=`/uploads/${imagePath}`, alt="Uploaded Image")
+
+    // Exclude buttons or interactive elements that should not appear in the recording
